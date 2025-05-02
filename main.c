@@ -41,7 +41,12 @@
 #define BALL_SIZE 34
 #define EGG_CRACKING_SIZE 50
 
-#define BALL_PERCENTAGE_MOVEMENT_PER_SECOND 1.20f
+#if __EMSCRIPTEN__
+  #define BALL_PERCENTAGE_MOVEMENT_PER_SECOND 1.40f
+#else
+  #define BALL_PERCENTAGE_MOVEMENT_PER_SECOND 1.30f
+#endif
+
 #define EGG_CRACKING_PERCENTAGE_MOVEMENT_PER_SECOND 0.6f
 
 const int PLY_PERC_MOV_PER_SEC_IN_PIXELS = SCREEN_HEIGHT * PLY_PERCENTAGE_MOVEMENT_PER_SECOND;
@@ -877,6 +882,8 @@ bool initSystem(GameContext * ctx) {
         return false;
     }
 
+    SDL_SetRenderVSync(ctx->renderer, -1);
+
     if (!Mix_OpenAudio( 0, NULL)) {
         printf( "SDL Mixer could not be initialized! SDL Error: %s\n", SDL_GetError() );
         return false;
@@ -922,10 +929,10 @@ bool initSystem(GameContext * ctx) {
         return false;
     }
 
-    ctx->titleScreen = loadTexture("assets/titleScreen.bmp", ctx->renderer);
-    ctx->background = loadTexture("assets/background.bmp", ctx->renderer);
-    ctx->mooseWinsScreen = loadTexture("assets/mooseWinsScreen.bmp", ctx->renderer);
-    ctx->gooseWinsScreen = loadTexture("assets/gooseWinsScreen.bmp", ctx->renderer);
+    ctx->titleScreen = loadTexture("assets/titleScreen.png", ctx->renderer);
+    ctx->background = loadTexture("assets/background.png", ctx->renderer);
+    ctx->mooseWinsScreen = loadTexture("assets/mooseWinsScreen.png", ctx->renderer);
+    ctx->gooseWinsScreen = loadTexture("assets/gooseWinsScreen.png", ctx->renderer);
     ctx->moosePaddle = loadTexture("assets/moosePaddle.png", ctx->renderer);
     ctx->goosePaddle = loadTexture("assets/goosePaddle.png", ctx->renderer);
     ctx->eggCracking = loadTexture("assets/eggcracking.png", ctx->renderer);
@@ -1005,7 +1012,7 @@ SDL_AppResult SDL_AppIterate(void *appstate){
     ctx->timeDeltaSeconds = (currentTime - ctx->lastTime) / 1000.0f;
     ctx->lastTime = currentTime;
 
-    rateLimitFps(ctx->lastTime);
+    //rateLimitFps(ctx->lastTime);
 
     //check right player ai status
     if ((ctx->lastTime - ctx->lastRightPlayerInputTime) / 1000 > AI_TIME_SECONDS) {

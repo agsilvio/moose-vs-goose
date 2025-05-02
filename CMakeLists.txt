@@ -65,7 +65,7 @@ target_link_libraries(moose-vs-goose PRIVATE SDL3_image::SDL3_image m)
 
 if (EMSCRIPTEN)
 	#control memory
-	target_link_options(${CMAKE_PROJECT_NAME} PRIVATE -sINITIAL_MEMORY=16777216)
+	target_link_options(${CMAKE_PROJECT_NAME} PRIVATE -sINITIAL_MEMORY=524288000)
 
 	# Output to index.html for easier deployments
 	set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "index")
